@@ -179,7 +179,7 @@ public class UserFrame extends JFrame {
 	UserRepo usr = new UserRepo();
 	List<User> ls;
 	public String id;
-	
+
 	public void loadTable() {
 		ls = usr.show();
 		TableUser tu = new TableUser(ls);

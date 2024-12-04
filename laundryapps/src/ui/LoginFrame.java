@@ -3,35 +3,31 @@ package ui;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
+import error.ValidationException;
 import model.User;
+import service.LoginService;
+import util.ValidationUtil;
 
-import com.jgoodies.forms.layout.FormSpecs;
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import java.awt.FlowLayout;
 import java.awt.Font;
-import javax.swing.JTextField;
-import net.miginfocom.swing.MigLayout;
 import javax.swing.SwingConstants;
-import javax.swing.JButton;
-import javax.swing.AbstractAction;
-import java.awt.event.ActionEvent;
-import javax.swing.Action;
-import javax.swing.ButtonGroup;
-import java.awt.Choice;
 import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class LoginFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private JTextField txtUsername;
-	private JTextField txtPassword;
-
+	private JPanel contentPane;
+	private JTextField Username;
+	private JTextField Password;
 
 	/**
 	 * Launch the application.
@@ -53,67 +49,72 @@ public class LoginFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public LoginFrame() {
-		setBounds(100, 100, 488, 316);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getContentPane().setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("Laundry App");
-		lblNewLabel.setBounds(10, 0, 484, 46);
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 30));
-		getContentPane().add(lblNewLabel);
-		
-		txtUsername = new JTextField();
-		txtUsername.setBounds(108, 91, 257, 30);
-		getContentPane().add(txtUsername);
-		txtUsername.setColumns(10);
-		
-		JLabel lblNewLabel_1 = new JLabel("Username");
-		lblNewLabel_1.setBounds(108, 66, 157, 14);
-		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		getContentPane().add(lblNewLabel_1);
-		
-		JLabel lblNewLabel_1_1 = new JLabel("Password");
-		lblNewLabel_1_1.setBounds(108, 142, 157, 14);
-		lblNewLabel_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		getContentPane().add(lblNewLabel_1_1);
-		
-		txtPassword = new JTextField();
-		txtPassword.setBounds(108, 167, 257, 30);
-		txtPassword.setColumns(10);
-		getContentPane().add(txtPassword);
-		
-		JButton btnLogin = new JButton("Login");
-		btnLogin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(User.login(txtUsername.getText(), txtPassword.getText())) {
-			new MainFrame().setVisible(true);
-			dispose();
-				}else {
-					JOptionPane.showMessageDialog(null, "Login Gagal");
-				}
-				}
-			
-		});
-		btnLogin.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		btnLogin.setBounds(108, 238, 257, 30);
-		getContentPane().add(btnLogin);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-	}
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
-			putValue(NAME, "SwingAction");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-		}
-	}
-	private class SwingAction_1 extends AbstractAction {
-		public SwingAction_1() {
-			putValue(NAME, "SwingAction_1");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-		}
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JButton btnNewButton = new JButton("Login");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String userValue = Username.getText();
+				String passValue = Password.getText();
+				
+				// Create user object
+				User user = new User(userValue, passValue);
+				
+	    	try {
+				ValidationUtil.validate(user);
+				LoginService loginService = new LoginService();
+				if(loginService.authenticate(user)) {
+					System.out.println("Login successful!");
+					new MainFrame().setVisible(true);
+				dispose();
+				}
+				else {
+					System.out.println("Invalid username or passwor.d");
+					JOptionPane.showMessageDialog(null, "Login Gagal, Invalid username or password.");
+				}
+	    	}catch(ValidationException | NullPointerException exception) {
+				System.out.println("Data tidak valid : " + exception.getMessage());
+				JOptionPane. showMessageDialog(null, "Login Gagal: "+ exception.getMessage());
+	    	}finally {			
+	    		System.out.println("Selalu di eksekusi");
+	    	}
+			}
+	    	});
+			
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton.setBounds(157, 214, 110, 30);
+		contentPane.add(btnNewButton);
+		
+		Username = new JTextField();
+		Username.setBounds(107, 78, 207, 30);
+		contentPane.add(Username);
+		Username.setColumns(10);
+		
+		Password = new JTextField();
+		Password.setBounds(107, 153, 207, 28);
+		contentPane.add(Password);
+		Password.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("Password");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel.setBounds(107, 119, 187, 23);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblUsername = new JLabel("Username");
+		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblUsername.setBounds(107, 44, 187, 23);
+		contentPane.add(lblUsername);
+		
+		JLabel lblNewLabel_1 = new JLabel("Login Form");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel_1.setBounds(10, 11, 416, 30);
+		contentPane.add(lblNewLabel_1);
 	}
 }
