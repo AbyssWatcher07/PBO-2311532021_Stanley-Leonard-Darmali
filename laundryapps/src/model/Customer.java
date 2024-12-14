@@ -2,14 +2,14 @@ package model;
 
 public class Customer {
     private String id;
-    private String nama;
+    private String name;
     private String alamat;
     private String nomorHp;
 
     // Constructor
-    public Customer(String id, String nama, String alamat, String nomorHp) {
+    public Customer(String id, String name, String alamat, String nomorHp) {
         this.id = id;
-        this.nama = nama;
+        this.name = name;
         this.alamat = alamat;
         this.nomorHp = nomorHp;
     }
@@ -23,12 +23,12 @@ public class Customer {
         this.id = id;
     }
 
-    public String getNama() {
-        return nama;
+    public String getName() {
+        return name;
     }
 
-    public void setNama(String nama) {
-        this.nama = nama;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getAlamat() {

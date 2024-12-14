@@ -79,7 +79,7 @@ public class LoginFrame extends JFrame {
         btnLogin.setBounds(157, 214, 110, 30);
         contentPane.add(btnLogin);
 
-        // Action listener for the login button
+       
         btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(User.login(txtUsername.getText(), txtPassword.getText())) {
